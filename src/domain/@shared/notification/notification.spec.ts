@@ -10,7 +10,7 @@ describe("Unit testss for notifications", () => {
 
     notification.addError(error);
 
-    expect(notification.messages("customer")).toBe("customer: error message,");
+    expect(notification.messages("customer")).toBe("customer: error message");
 
     const error2 = {
       message: "error message2",
@@ -19,7 +19,7 @@ describe("Unit testss for notifications", () => {
     notification.addError(error2);
 
     expect(notification.messages("customer")).toBe(
-      "customer: error message,customer: error message2,"
+      "customer: error message, customer: error message2"
     );
 
     const error3 = {
@@ -29,10 +29,10 @@ describe("Unit testss for notifications", () => {
     notification.addError(error3);
 
     expect(notification.messages("customer")).toBe(
-      "customer: error message,customer: error message2,"
+      "customer: error message, customer: error message2"
     );
     expect(notification.messages()).toBe(
-      "customer: error message,customer: error message2,order: error message3,"
+      "customer: error message, customer: error message2, order: error message3"
     );
   });
 
@@ -56,5 +56,25 @@ describe("Unit testss for notifications", () => {
     notification.addError(error);
 
     expect(notification.getErrors()).toEqual([error]);
+  });
+
+  it("should throw error if has errors", () => {
+    const notification = new Notification();
+    const error = {
+      message: "error message",
+      context: "customer",
+    };
+
+    notification.addError(error);
+
+    expect(() => notification.throwErrorIfHasErrors()).toThrowError(
+      "customer: error message"
+    );
+  });
+
+  it("should not throw error if has no errors", () => {
+    const notification = new Notification();
+
+    expect(() => notification.throwErrorIfHasErrors()).not.toThrowError();
   });
 });
